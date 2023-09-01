@@ -32,7 +32,7 @@ model Session{
 
 model Credential{
   id Int @id @default(autoincrement())
-  title String @unique
+  title String 
   site String
   username String
   password String

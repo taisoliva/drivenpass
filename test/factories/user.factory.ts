@@ -11,4 +11,16 @@ export class UserFactory {
       },
     });
   }
+
+  static async session(prisma: PrismaService, userId: number, token: string) {
+    return prisma.session.create({
+      data: { userId, token },
+    });
+  }
+
+  static async findSession(prisma: PrismaService, userId: number) {
+    return prisma.session.findFirst({
+      where: { userId },
+    });
+  }
 }
