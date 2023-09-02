@@ -29,9 +29,7 @@ export class CredentialsService {
 
   async NotFoundOrForbbiden(id: number, session: Session) {
     const credential = await this.credentialsRepository.findOneCredential(id);
-
     if (!credential) throw new NotFoundException('credential not found');
-
     if (credential.userId !== session.userId) throw new ForbiddenException();
 
     return credential;

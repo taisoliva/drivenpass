@@ -6,17 +6,20 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { E2EUtils } from './utils/e2e-utils';
 import { UserFactory } from './factories/user.factory';
-import { fa, faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { CredentialFactory } from './factories/credential.factory';
 
 describe('Credentials (e2e)', () => {
   let app: INestApplication;
-  let prisma: PrismaService;
+  let prisma: PrismaService = new PrismaService();
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule, PrismaModule],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(prisma)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
@@ -98,11 +101,11 @@ describe('Credentials (e2e)', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
 
-  it('Post /credentials => should return 409 if created a credential with the same title', async () => {
+  it('Post /credentials => should return 409 if user try to create a credential with the same title', async () => {
     const user = await UserFactory.build(prisma);
     const token = E2EUtils.generateValidToken(user);
     await UserFactory.session(prisma, user.id, token);
-    const credential = await CredentialFactory.build(prisma, user.id);
+    const credential = await new CredentialFactory().build(prisma, user.id);
 
     const response = await request(app.getHttpServer())
       .post('/credentials')
@@ -126,7 +129,7 @@ describe('Credentials (e2e)', () => {
     await UserFactory.session(prisma, user.id, token);
     await UserFactory.session(prisma, user2.id, token2);
 
-    const credential = await CredentialFactory.build(prisma, user.id);
+    const credential = await new CredentialFactory().build(prisma, user.id);
 
     const response = await request(app.getHttpServer())
       .post('/credentials')
@@ -140,65 +143,173 @@ describe('Credentials (e2e)', () => {
     expect(response.statusCode).toBe(HttpStatus.CREATED);
   });
 
-  /* it('Post /users/sign-up => should return 409 when email already is used', async () => {
+  it('GET /credentials => should return 401 if user is not login', async () => {
     const user = await UserFactory.build(prisma);
+    const token = E2EUtils.generateValidToken(user);
+
+    await new CredentialFactory().build(prisma, user.id);
 
     const response = await request(app.getHttpServer())
-      .post('/users/sign-up')
-      .send({
-        email: user.email,
-        password: 'S#nhaF3orte!',
-      });
-    expect(response.body.statusCode).toBe(HttpStatus.CONFLICT);
+      .get('/credentials')
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
   });
 
-  it('Post /users/sign-up => should return 400 if password is not strong enough', async () => {
+  it('GET /credentials => should return 401 if token is not valid', async () => {
+    const user = await UserFactory.build(prisma);
+    const token = '';
+
+    await new CredentialFactory().build(prisma, user.id);
+
     const response = await request(app.getHttpServer())
-      .post('/users/sign-up')
-      .send({
-        email: faker.internet.email(),
-        password: '123456',
-      });
-
-    expect(response.body.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      .get('/credentials')
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
   });
 
-  it('Post /users/sign-in => should return 200 when user login', async () => {
+  it('GET /credentials => should return 200 all credentials users', async () => {
     const user = await UserFactory.build(prisma);
-    await request(app.getHttpServer())
-      .post('/users/sign-in')
-      .send({
-        email: user.email,
-        password: 'S#nhaF3orte!',
-      })
-      .expect(HttpStatus.OK);
-  });
+    const token = E2EUtils.generateValidToken(user);
+    await UserFactory.session(prisma, user.id, token);
 
-  it('Post /users/sign-in => should return 401 if email or password is invalid', async () => {
-    const user = await UserFactory.build(prisma);
-    await request(app.getHttpServer())
-      .post('/users/sign-in')
-      .send({
-        email: user.email,
-        password: 'S#nhaF3orte!!',
-      })
-      .expect(HttpStatus.UNAUTHORIZED);
-  });
+    await new CredentialFactory().build(prisma, user.id);
+    await new CredentialFactory().build(prisma, user.id);
 
-  it('Post /users/sign-in => should return userId and token', async () => {
-    const user = await UserFactory.build(prisma);
     const response = await request(app.getHttpServer())
-      .post('/users/sign-in')
-      .send({
-        email: user.email,
-        password: 'S#nhaF3orte!',
-      });
-    const session = await prisma.session.findFirst({
-      where: {
-        userId: user.id,
-      },
-    });
-    expect(response.body.userId).toBe(user.id);
-    expect(response.body.token).toBe(session.token);
-  }); */
+      .get('/credentials')
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body).toHaveLength(2);
+  });
+
+  it('GET /credentials => should return 200 all credentials by another users', async () => {
+    const user = await UserFactory.build(prisma);
+    const user2 = await UserFactory.build(prisma);
+
+    const token = E2EUtils.generateValidToken(user);
+    const token2 = E2EUtils.generateValidToken(user2);
+
+    await UserFactory.session(prisma, user.id, token);
+    await UserFactory.session(prisma, user2.id, token2);
+
+    await new CredentialFactory().build(prisma, user.id);
+    await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .get('/credentials')
+      .set('authorization', `Bearer ${token2}`);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body).toHaveLength(0);
+  });
+
+  it('GET /credentials/:id => should return 403 if id dont belong to user', async () => {
+    const user = await UserFactory.build(prisma);
+    const user2 = await UserFactory.build(prisma);
+
+    const token = E2EUtils.generateValidToken(user);
+    const token2 = E2EUtils.generateValidToken(user2);
+
+    await UserFactory.session(prisma, user.id, token);
+    await UserFactory.session(prisma, user2.id, token2);
+
+    const credential = await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .get(`/credentials/${credential.id}`)
+      .set('authorization', `Bearer ${token2}`);
+
+    expect(response.status).toBe(HttpStatus.FORBIDDEN);
+  });
+
+  it('GET /credentials/:id => should return 404 if id dont exist', async () => {
+    const user = await UserFactory.build(prisma);
+    const token = E2EUtils.generateValidToken(user);
+    await UserFactory.session(prisma, user.id, token);
+
+    await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .get(`/credentials/1`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('GET /credentials/:id => should return 200 if credential by id', async () => {
+    const user = await UserFactory.build(prisma);
+    const token = E2EUtils.generateValidToken(user);
+    await UserFactory.session(prisma, user.id, token);
+    const credential = await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .get(`/credentials/${credential.id}`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+  });
+
+  it('DELETE /credentials => should return 401 if user is not login', async () => {
+    const user = await UserFactory.build(prisma);
+    const token = E2EUtils.generateValidToken(user);
+
+    const credential = await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/credentials/${credential.id}`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+  });
+
+  it('DELETE /credentials => should return 401 if token is not valid', async () => {
+    const user = await UserFactory.build(prisma);
+    const token = '';
+
+    const credential = await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/credentials/${credential.id}`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.UNAUTHORIZED);
+  });
+
+  it('DELETE /credentials/:id => should return 404 if credential id not exist', async () => {
+    const user = await UserFactory.build(prisma);
+    const token = E2EUtils.generateValidToken(user);
+    await UserFactory.session(prisma, user.id, token);
+    await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/credentials/1`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('DELETE /credentials/:id => should return 403 if id dont belong to user', async () => {
+    const user = await UserFactory.build(prisma);
+    const user2 = await UserFactory.build(prisma);
+
+    const token = E2EUtils.generateValidToken(user);
+    const token2 = E2EUtils.generateValidToken(user2);
+
+    await UserFactory.session(prisma, user.id, token);
+    await UserFactory.session(prisma, user2.id, token2);
+
+    const credential = await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/credentials/${credential.id}`)
+      .set('authorization', `Bearer ${token2}`);
+
+    expect(response.status).toBe(HttpStatus.FORBIDDEN);
+  });
+
+  it('DELETE /credentials/:id => should return 200 if credential by id', async () => {
+    const user = await UserFactory.build(prisma);
+    const token = E2EUtils.generateValidToken(user);
+    await UserFactory.session(prisma, user.id, token);
+    const credential = await new CredentialFactory().build(prisma, user.id);
+
+    const response = await request(app.getHttpServer())
+      .delete(`/credentials/${credential.id}`)
+      .set('authorization', `Bearer ${token}`);
+    expect(response.statusCode).toBe(HttpStatus.OK);
+  });
 });
