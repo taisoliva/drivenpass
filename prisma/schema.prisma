@@ -44,7 +44,7 @@ model Credential{
 
 model Note{
   id Int @id @default(autoincrement())
-  title String @unique
+  title String 
   note String
   user User @relation(fields: [userId], references: [id])
   userId Int
@@ -61,7 +61,7 @@ model Card{
   cardNumber String
   name String
   expiry DateTime
-  cvc Int
+  cvc String
   password String
   virtual Boolean
   type String

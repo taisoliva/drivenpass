@@ -34,11 +34,18 @@ export class CredentialsRepository {
   }
 
   async findAll(userId: number) {
-    return await this.prisma.credential.findMany({
+    const result = await this.prisma.credential.findMany({
       where: {
         userId,
       },
     });
+
+    const credentials = result.map((item) => {
+      item.password = this.cryptr.decrypt(item.password);
+      return item;
+    });
+
+    return credentials;
   }
 
   async findOneCredential(id: number) {
