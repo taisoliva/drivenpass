@@ -19,9 +19,32 @@ O drivenPass foi criado para gerenciar informações que o usuário deseja guard
 ## Tecnologias
 
 <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+<img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" />
+<img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white" />
+<img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" />
+<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
 
+O prisma foi utilizado para a criação do banco de dados e também para monitorar as migrações e as alterações realizadas. O Jest foi utilizado juntamente com a biblioteca <a href="https://fakerjs.dev/api/"> faker </a> para realizar os testes de integração nas rotas da aplicação. 
 
+## Como rodar
 
+1. Clone o repositório em https://github.com/taisoliva/drivenpass.git
+2. Instale as dependências
+   ```
+   npm i
+   ```
+3. Inicialize o banco de dados com o Prisma
+   ```
+   npx prisma migrate dev
+   ```
+   ```
+   npx prisma generate
+   ```
+   ```
+   npx prisma seed
+   ```
+   
 <!-- 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
