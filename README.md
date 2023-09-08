@@ -1,3 +1,9 @@
+# DrivenPass 🔒
+
+Pensando em diversão senhas que o usuário precisa guardar de difenrentes lugares possíveis, essa API é resposável por fazer isso pelo usuário. Utilizando criptografia nos dados sensíveis.
+
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
