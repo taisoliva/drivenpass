@@ -4,14 +4,20 @@ Pensando nas diversas senhas que o usuário precisa guardar de diferentes lugare
 
 ## Sobre
 
+O drivenPass foi criado para gerenciar informações que o usuário deseja guardar como senhas, notas, username ou nicknames de sites.
+
 - Banco de Dados: PostgreSql
 - Modelagem de dados
 - PrismaORM
 - Orientação a Objeto com NestJs
 - Typescript
-- Testes automatizados de integração 
+- Testes automatizados de integração com Jest
+- Próximos passos: Criar o front-End para a aplicação.
+
+  Caso queria explorar mais a API segue o link do deploy no render: <a herf="https://drivenpass-api-s4nm.onrender.com"> drivenpass-api </a>
 
 
+<!-- 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
@@ -36,6 +42,7 @@ Pensando nas diversas senhas que o usuário precisa guardar de diferentes lugare
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+<!-- 
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
@@ -84,4 +91,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+Nest is [MIT licensed](LICENSE) 
+
+-->
