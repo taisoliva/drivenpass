@@ -1,7 +1,15 @@
 # DrivenPass 🔒
 
-Pensando em diversão senhas que o usuário precisa guardar de difenrentes lugares possíveis, essa API é resposável por fazer isso pelo usuário. Utilizando criptografia nos dados sensíveis.
+Pensando nas diversas senhas que o usuário precisa guardar de diferentes lugares possíveis, essa API é resposável por fazer isso pelo usuário. Utilizando criptografia nos dados sensíveis.
 
+## Sobre
+
+- Banco de Dados: PostgreSql
+- Modelagem de dados
+- PrismaORM
+- Orientação a Objeto com NestJs
+- Typescript
+- Testes automatizados de integração 
 
 
 <p align="center">
