@@ -14,7 +14,12 @@ O drivenPass foi criado para gerenciar informações que o usuário deseja guard
 - Testes automatizados de integração com Jest
 - Próximos passos: Criar o front-End para a aplicação.
 
-  Caso queria explorar mais a API segue o link do deploy no render: <a herf="https://drivenpass-api-s4nm.onrender.com"> drivenpass-api </a>
+  Caso queria explorar mais a API segue o link do deploy no render: <a href="https://drivenpass-api-s4nm.onrender.com"> drivenpass-api </a>
+
+## Tecnologias
+
+https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
+
 
 
 <!-- 
