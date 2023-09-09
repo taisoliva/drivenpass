@@ -18,13 +18,14 @@ O drivenPass foi criado para gerenciar informações que o usuário deseja guard
 
 ## Tecnologias
 
-<img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
-<img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" />
-<img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
-<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white" />
-<img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" />
-<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
-
+<p>
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" />
+  <img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white" />
+  <img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+</p>
 O prisma foi utilizado para a criação do banco de dados e também para monitorar as migrações e as alterações realizadas. O Jest foi utilizado juntamente com a biblioteca <a href="https://fakerjs.dev/api/"> faker </a> para realizar os testes de integração nas rotas da aplicação. 
 
 ## Como rodar
@@ -44,6 +45,32 @@ O prisma foi utilizado para a criação do banco de dados e também para monitor
    ```
    npx prisma seed
    ```
+4. Crie as variáveis de ambiente no arquivo .env
+   ```
+      DATABASE_URL="postgresql://seu-usuario:sua-senha@localhost:5432/mydb?schema=public"
+      JWT_SECRET="sua-senha-super-secreta"
+      CRYPTR = "sua-senha-super-secreta"
+   ```
+
+6. Inicialize a API
+   ```
+   npm run start:dev
+   ```
+## Como rodar os testes 
+
+1. Crie as variáveis de ambiente no .env.test
+   ```
+      DATABASE_URL="postgresql://seu-usuario:sua-senha@localhost:5432/mydb-test?schema=public"
+   ```
+2. Crie um banco de dados para teste
+   ```
+   npm run test:prisma
+   ```
+3. Rode os testes
+   ```
+   npm run test:e2e
+   ```
+  
    
 <!-- 
 <p align="center">
