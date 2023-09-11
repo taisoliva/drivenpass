@@ -45,7 +45,7 @@ O prisma foi utilizado para a criação do banco de dados e também para monitor
    ```
    npx prisma seed
    ```
-4. Crie as variáveis de ambiente no arquivo .env
+4. Crie as variáveis de ambiente no arquivo .env na raiz do projeto
    ```
       DATABASE_URL="postgresql://seu-usuario:sua-senha@localhost:5432/mydb?schema=public"
       JWT_SECRET="sua-senha-super-secreta"
@@ -58,7 +58,7 @@ O prisma foi utilizado para a criação do banco de dados e também para monitor
    ```
 ## Como rodar os testes 
 
-1. Crie as variáveis de ambiente no .env.test
+1. Crie as variáveis de ambiente no .env.test na raiz do projeto
    ```
       DATABASE_URL="postgresql://seu-usuario:sua-senha@localhost:5432/mydb-test?schema=public"
    ```
